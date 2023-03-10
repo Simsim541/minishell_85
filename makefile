@@ -6,7 +6,7 @@
 #    By: simoberri <simoberri@student.42.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/07 18:45:14 by aaammari          #+#    #+#              #
-#    Updated: 2023/03/10 01:37:26 by simoberri        ###   ########.fr        #
+#    Updated: 2023/03/10 22:59:36 by simoberri        ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,9 +43,9 @@ LIBFTT :
 
 clean :
 	rm -f $(NAME) $(OBJ)
-	make clean -C LIBFT
+	make clean -C libft
 	
 fclean : clean
-	make fclean -C LIBFT
+	make fclean -C libft
 
 re : fclean all

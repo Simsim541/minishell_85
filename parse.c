@@ -6,7 +6,7 @@
 /*   By: simoberri <simoberri@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 17:59:49 by mberri            #+#    #+#             */
-/*   Updated: 2023/03/10 01:33:02 by simoberri        ###   ########.fr       */
+/*   Updated: 2023/03/10 22:27:33 by simoberri        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,11 @@ void	normal_parsing(t_cmd *cmd, char *line)
 		cmd->argument = malloc(sizeof(char *) * k + 1);
 		cmd->argument[k] = NULL;
 	}
-	cmd->cmd = ft_strdup(command[i]);
+	cmd->cmd = ft_strtrim(command[i], '\"', '\'');
 	i++;
 	while (command[i])
 	{
-		cmd->argument[j++] = ft_strdup(command[i]);
+		cmd->argument[j++] = ft_strtrim(command[i], '\"', '\'');
 		i++;
 	}
 	j = 0;
@@ -152,6 +152,7 @@ void	fill_redirection(t_cmd *red, char *line, int *i)
 {
 	int	db;
 	int	s;
+	char *str;
 
 	db = 0;
 	s = 0;
@@ -170,7 +171,8 @@ void	fill_redirection(t_cmd *red, char *line, int *i)
 		quotes_counter(line[*i], &db, &s);
 		(*i)++;
 	}
-	red->redirect->file_name = ft_substr(line, red->redirect->index, (*i) - red->redirect->index);
+	str = ft_substr(line, red->redirect->index, (*i) - red->redirect->index);
+	red->redirect->file_name = ft_strtrim(str, '\"', '\'');
 	red->redirect->next = init_redirecttion();
 	red->redirect = red->redirect->next;
 }
@@ -180,6 +182,7 @@ static void	fill_command(t_cmd *cmd, char *line, int *i)
 	int start;
 	int	db;
 	int	s;
+	char	*str;
 	
 	db = 0;
 	s = 0;
@@ -196,12 +199,14 @@ static void	fill_command(t_cmd *cmd, char *line, int *i)
 			break ;
 		(*i)++;
 	}
-	cmd->cmd = ft_substr(line, start, (*i) - start);
+	str = ft_substr(line, start, (*i) - start);
+	cmd->cmd = ft_strtrim(str, '\"', '\'');
 }
 
 static void fill_arg_red(char *line, t_cmd *cmd, int *i)
 {
 	int db;
+	char *str;
 	int s;
 	int start;
 	int j;
@@ -229,7 +234,8 @@ static void fill_arg_red(char *line, t_cmd *cmd, int *i)
 			}
 			if (start < *i)
 			{
-				cmd->argument[j] = ft_substr(line, start, *i - start);
+				str = ft_substr(line, start, *i - start);
+				cmd->argument[j] = ft_strtrim(str, '\"', '\'');
 				j++;
 			}
 		}
@@ -241,6 +247,7 @@ static void fill_arg_red(char *line, t_cmd *cmd, int *i)
 void	parsing_with_redirection(t_cmd *cmd, char *line)
 {
 	t_redirection	*begin_red;
+	t_redirection	*temp;
 	int				i;
 	int				n_of_argument;
 
@@ -252,6 +259,7 @@ void	parsing_with_redirection(t_cmd *cmd, char *line)
 	cmd->argument[n_of_argument] = NULL;
 	if (line[i])
 		fill_arg_red(line, cmd, &i);
-	cmd->redirect = NULL;
+	temp = cmd->redirect;
 	cmd->redirect = begin_red;
+	free(temp);
 }
